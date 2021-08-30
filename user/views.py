@@ -3,9 +3,12 @@ from django.shortcuts import render
 from rest_framework import permissions, generics, status
 from knox.models import AuthToken
 from rest_framework.response import Response
+from django.core.paginator import Paginator
 
-from .models import User, Profile
-from .serializers import RegisterSerializer, UserSerializer, LoginSerializer, ProfileSerializer
+import json
+
+from .models import User, Profile, Income, Expense
+from .serializers import RegisterSerializer, UserSerializer, LoginSerializer, ProfileSerializer, IncomeSerializer, ExpenseSerializer
 # Create your views here.
 
 
@@ -99,3 +102,116 @@ class RegisterApi(generics.GenericAPIView):
         #     return Response({
         #         "message": "Could not register user"
         #     }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class IncomeApi(generics.RetrieveAPIView):
+    '''Income Api GET POST PUT DELETE'''
+
+    serializer_class = IncomeSerializer
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get(self, request):
+        user = self.request.user
+        offset = 10
+        queryset = Income.objects.filter(user=user).order_by('-id')
+        paginator = Paginator(queryset, offset)
+        page = self.request.query_params.get("page")
+        pageList = paginator.get_page(page)
+        last_page = paginator.num_pages
+
+        return Response({
+            'income': IncomeSerializer(pageList, many=True).data,
+            "last_page": last_page,
+        })
+
+    def post(self, request):
+        user = self.request.user
+        json_data = json.loads(request.body)
+        income = Income(
+            user=user, income=json_data['income'], amount=float(json_data['amount']))
+        income.save()
+
+        return Response({
+            "income": IncomeSerializer(income, many=False).data,
+            "message": "Saved"
+        })
+
+    def put(self, request):
+        json_data = json.loads(request.body)
+        income = Income.objects.get(id=json_data['id'])
+        income.income = json_data['income']
+        income.amount = float(json_data['amount'])
+        income.save()
+
+        return Response({
+            "income": IncomeSerializer(income, many=False).data,
+            "message": "Edited"
+        })
+
+    def delete(self, request):
+        id = self.request.query_params.get("income_id")
+        income = Income.objects.get(id=id)
+        income.delete()
+
+        return Response({
+            "message": "Income has been deleted",
+        }, status=status.HTTP_204_NO_CONTENT)
+
+
+class ExpenseApi(generics.RetrieveAPIView):
+    '''Expneses api'''
+    serializer_class = ExpenseSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get(self, request):
+        user = self.request.user
+        offset = 10
+        queryset = Expense.objects.filter(user=user).order_by('-id')
+        paginator = Paginator(queryset, offset)
+        page = self.request.query_params.get("page")
+        pageList = paginator.get_page(page)
+        last_page = paginator.num_pages
+
+        return Response({
+            'expense': ExpenseSerializer(pageList, many=True).data,
+            "last_page": last_page,
+        })
+
+    def post(self, request):
+        user = self.request.user
+        json_data = json.loads(request.body)
+        expense = Expense(
+            user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'])
+        expense.save()
+
+        return Response({
+            'expense': ExpenseSerializer(expense, many=False).data,
+            "message": "Saved",
+        })
+
+    def put(self,request):
+        json_data = json.loads(request.body)
+        expense=Expense.objects.get(id=json_data['id'])
+        expense.expense=json_data['expense']
+        expense.amount=float(json_data['amount'])
+        expense.static=json_data['static']
+        expense.save()
+
+        return Response({
+            'expense': ExpenseSerializer(expense, many=False).data,
+            "message": "Edited",
+        })
+    
+    def delete(self, request):
+        id = self.request.query_params.get("expense_id")
+        expense = Expense.objects.get(id=id)
+        expense.delete()
+
+        return Response({
+            "message": "Income has been deleted",
+        }, status=status.HTTP_204_NO_CONTENT)

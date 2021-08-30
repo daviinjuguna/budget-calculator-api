@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
-from .models import User, Profile
+from .models import User, Profile,Income,Expense
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -55,3 +55,15 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
+
+class  IncomeSerializer(serializers.ModelSerializer):
+    income=serializers.CharField
+    amount=serializers.CharField
+    class  Meta:
+        model=Income
+        fields='__all__'
+
+class  ExpenseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Expense
+        fields='__all__'
