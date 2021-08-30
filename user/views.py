@@ -120,10 +120,15 @@ class IncomeApi(generics.RetrieveAPIView):
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
         last_page = paginator.num_pages
+        total = 0;
+        for income in queryset:
+            total=total +income.amount
 
         return Response({
             'income': IncomeSerializer(pageList, many=True).data,
+            'total':total,
             "last_page": last_page,
+            
         })
 
     def post(self, request):
@@ -176,9 +181,13 @@ class ExpenseApi(generics.RetrieveAPIView):
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
         last_page = paginator.num_pages
+        total = 0;
+        for expense in queryset:
+            total=total +expense.amount
 
         return Response({
             'expense': ExpenseSerializer(pageList, many=True).data,
+            "total":total,
             "last_page": last_page,
         })
 
