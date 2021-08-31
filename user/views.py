@@ -120,7 +120,7 @@ class IncomeApi(generics.RetrieveAPIView):
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
         last_page = paginator.num_pages
-        total = 0;
+        total = 0.0;
         for income in queryset:
             total=total +income.amount
 
@@ -181,13 +181,10 @@ class ExpenseApi(generics.RetrieveAPIView):
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
         last_page = paginator.num_pages
-        total = 0;
-        for expense in queryset:
-            total=total +expense.amount
+      
 
         return Response({
             'expense': ExpenseSerializer(pageList, many=True).data,
-            "total":total,
             "last_page": last_page,
         })
 
@@ -195,7 +192,7 @@ class ExpenseApi(generics.RetrieveAPIView):
         user = self.request.user
         json_data = json.loads(request.body)
         expense = Expense(
-            user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'])
+            user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'],percent=float(json_data['percent']))
         expense.save()
 
         return Response({
@@ -208,6 +205,7 @@ class ExpenseApi(generics.RetrieveAPIView):
         expense=Expense.objects.get(id=json_data['id'])
         expense.expense=json_data['expense']
         expense.amount=float(json_data['amount'])
+        expense.percent=float(json_data['percent'])
         expense.static=json_data['static']
         expense.save()
 

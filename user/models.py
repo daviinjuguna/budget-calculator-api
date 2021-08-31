@@ -107,16 +107,18 @@ class Income(models.Model):
     amount = models.FloatField(default=0, verbose_name="Amount",)
 
     def __str__(self):
-        return self.name
+        return self.income
 
 
 class Expense(models.Model):
     user = models.ForeignKey(User, verbose_name="user",
                              on_delete=models.CASCADE)
     expense = models.CharField(max_length=100, verbose_name="Expense Type",)
-    amount = models.DecimalField(max_digits=5,
-                                 default=0, verbose_name="percentage amount", null=True, blank=True, decimal_places=2)
+    percent = models.FloatField(
+        default=0, verbose_name="percentage amount", null=True, blank=True,)
+    amount = models.FloatField(
+        default=0, verbose_name="Amount", blank=True, null=True)
     static = models.BooleanField(default=False, verbose_name="is static")
 
     def __str__(self):
-        return self.name
+        return self.expense
