@@ -114,21 +114,21 @@ class IncomeApi(generics.RetrieveAPIView):
 
     def get(self, request):
         user = self.request.user
-        offset = 10
+        offset = 25
         queryset = Income.objects.filter(user=user).order_by('-id')
         paginator = Paginator(queryset, offset)
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
         last_page = paginator.num_pages
-        total = 0.0;
+        total = 0.0
         for income in queryset:
-            total=total +income.amount
+            total = total + income.amount
 
         return Response({
             'income': IncomeSerializer(pageList, many=True).data,
-            'total':total,
+            'total': total,
             "last_page": last_page,
-            
+
         })
 
     def post(self, request):
@@ -175,13 +175,12 @@ class ExpenseApi(generics.RetrieveAPIView):
 
     def get(self, request):
         user = self.request.user
-        offset = 10
+        offset = 25
         queryset = Expense.objects.filter(user=user).order_by('-id')
         paginator = Paginator(queryset, offset)
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
         last_page = paginator.num_pages
-      
 
         return Response({
             'expense': ExpenseSerializer(pageList, many=True).data,
@@ -191,14 +190,10 @@ class ExpenseApi(generics.RetrieveAPIView):
     def post(self, request):
         user = self.request.user
         json_data = json.loads(request.body)
-        amount=None
-        percent=None
-        if json_data['amount']:
-             amount=float(json_data['amount'])
-        if json_data['percent']:
-            percent=float(json_data['percent'])
+        amount = None
+        percent = None
         expense = Expense(
-            user=user, expense=json_data['expense'],amount=amount, static=json_data['static'],percent=percent,)
+            user=user, expense=json_data['expense'], amount = float(json_data['amount']), static=json_data['static'], percent=percent,)
         expense.save()
 
         return Response({
@@ -206,24 +201,21 @@ class ExpenseApi(generics.RetrieveAPIView):
             "message": "Saved",
         })
 
-    def put(self,request):
+    def put(self, request):
         json_data = json.loads(request.body)
-        expense=Expense.objects.get(id=json_data['id'])
-        expense.expense=json_data['expense']
-        expense.amount=None
-        expense.percent=None
-        if json_data['amount']:
-             expense.amount=float(json_data['amount'])
-        if json_data['percent']:
-            expense.percent=float(json_data['percent'])
-        expense.static=json_data['static']
+        expense = Expense.objects.get(id=json_data['id'])
+        expense.expense = json_data['expense']
+        expense.amount = None
+        expense.percent = None
+        expense.amount = float(json_data['amount'])
+        expense.static = json_data['static']
         expense.save()
 
         return Response({
             'expense': ExpenseSerializer(expense, many=False).data,
             "message": "Edited",
         })
-    
+
     def delete(self, request):
         id = self.request.query_params.get("expense_id")
         expense = Expense.objects.get(id=id)
