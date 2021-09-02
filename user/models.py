@@ -118,6 +118,7 @@ class Expense(models.Model):
     amount = models.FloatField(
         default=0, verbose_name="Amount")
     static = models.BooleanField(default=False, verbose_name="is static")
+    color=models.CharField(max_length=100,verbose_name='color',default='#ffffff')
 
     def __str__(self):
         return self.expense
