@@ -194,10 +194,8 @@ class ExpenseApi(generics.RetrieveAPIView):
     def post(self, request):
         user = self.request.user
         json_data = json.loads(request.body)
-        amount = None
-        percent = None
         expense = Expense(
-            user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'], percent=percent,)
+            user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'],)
         expense.save()
 
         return Response({
@@ -209,8 +207,7 @@ class ExpenseApi(generics.RetrieveAPIView):
         json_data = json.loads(request.body)
         expense = Expense.objects.get(id=json_data['id'])
         expense.expense = json_data['expense']
-        expense.amount = None
-        expense.percent = None
+        expense.amount = json_data['amount']
         expense.amount = float(json_data['amount'])
         expense.static = json_data['static']
         expense.save()
