@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Housing",
+    "recommended": 22.5
+  },
+  {
+    "name": "Food & Shopping",
+    "recommended": 15.0
+  },
+  {
+    "name": "Savings & Investment",
+    "recommended": 17.0
+  },
+  {
+    "name": "Faith & Church/Charity",
+    "recommended": 12.0
+  },
+  {
+    "name": "Transport",
+    "recommended": 10.0
+  },
+  {
+    "name": "Utilities",
+    "recommended": 5.0
+  },
+  {
+    "name": "Clothing",
+    "recommended": 5.0
+  },
+  {
+    "name": "Personal Care & Wellness",
+    "recommended": 5.0
+  },
+  {
+    "name": "Entertainment",
+    "recommended": 7.5
+  }
+]

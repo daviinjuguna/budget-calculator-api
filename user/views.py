@@ -4,6 +4,7 @@ from rest_framework import permissions, generics, status
 from knox.models import AuthToken
 from rest_framework.response import Response
 from django.core.paginator import Paginator
+from .common import initExpense
 
 import json
 
@@ -60,6 +61,7 @@ class RegisterApi(generics.GenericAPIView):
                 profile.save()
 
                 print(user)
+                initExpense(user)
                 return Response({
                     'user': UserSerializer(user, many=False).data,
                     'profile': ProfileSerializer(profile, many=False).data,
@@ -176,7 +178,7 @@ class ExpenseApi(generics.RetrieveAPIView):
     def get(self, request):
         user = self.request.user
         offset = 25
-        queryset = Expense.objects.filter(user=user).order_by('-id')
+        queryset = Expense.objects.filter(user=user)
         paginator = Paginator(queryset, offset)
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
@@ -194,7 +196,7 @@ class ExpenseApi(generics.RetrieveAPIView):
     def post(self, request):
         user = self.request.user
         json_data = json.loads(request.body)
-        expense = Expense(color=json_data['color'], recommended=json_data['recommended'],
+        expense = Expense(recommended=json_data['recommended'],
                           user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'],)
         expense.save()
 
