@@ -165,6 +165,16 @@ class IncomeApi(generics.RetrieveAPIView):
         }, status=status.HTTP_204_NO_CONTENT)
 
 
+class UserAPI(generics.RetrieveAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
 class ExpenseApi(generics.RetrieveAPIView):
     '''Expneses api'''
     serializer_class = ExpenseSerializer
@@ -195,7 +205,7 @@ class ExpenseApi(generics.RetrieveAPIView):
         user = self.request.user
         json_data = json.loads(request.body)
         expense = Expense(color=json_data['color'],
-            user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'],)
+                          user=user, expense=json_data['expense'], amount=float(json_data['amount']), static=json_data['static'],)
         expense.save()
 
         return Response({

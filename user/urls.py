@@ -9,5 +9,5 @@ urlpatterns = [
     path('logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
     path('income/',IncomeApi.as_view(),name="income"),
     path('expense/',ExpenseApi.as_view(),name="expense"),
-
+    path('profile/',UserAPI.as_view(), name="profile")
 ]
