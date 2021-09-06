@@ -1,0 +1,6 @@
+find . -path "*/migrations/*.py" -not -name "init.py" -delete => for deleting
+GRANT ALL PRIVILEGES ON DATABASE "my_db" to my_user;
+#1:Django Dump Data
+python manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > t_dump.json
+#2:Django Generate Secret Key
+python -c 'from django.core.management.utils import get_random_secret_key;print(get_random_secret_key())'
