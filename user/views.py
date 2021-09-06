@@ -117,7 +117,7 @@ class IncomeApi(generics.RetrieveAPIView):
     def get(self, request):
         user = self.request.user
         offset = 25
-        queryset = Income.objects.filter(user=user).order_by('-id')
+        queryset = Income.objects.filter(user=user)
         paginator = Paginator(queryset, offset)
         page = self.request.query_params.get("page")
         pageList = paginator.get_page(page)
